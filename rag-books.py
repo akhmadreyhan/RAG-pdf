@@ -1,4 +1,3 @@
-from aiohttp.log import client_logger
 from langchain_core.documents import Document
 from PyPDF2 import PdfReader
 from google import genai
@@ -81,21 +80,23 @@ def save_db(embed, data):
     return collection
 
 
-def llm(txt, query):
+def llm(txt):
+    db = chromadb.Client()
+    collection = db.get_or_create_collection(name="rag")
+    user = input("Halo! ada yang bisa saya bantu? ")
+    queries = collection.query(query_texts=[user], n_results=3, include=["documents"])
     prompt = f""" 
     Anda adalah seorang AI asisten yang membantu pengguna dengan pertanyaan mereka tentang produk Apple. Hal-hal seperti umur pengguna, jenis kelamin pengguna, dan sifat pengguna bermacam-macam sehingga Anda harus dapat beradaptasi dengan pengguna.
     Dalam menjawab pertanyaan, anda diberikan beberapa konteks yang relevan sehingga anda dapat memberikan jawaban yang akurat. Selain itu, berikan jawaban kepada pengguna sesuai dengan bahasa yang mereka gunakan seperti jika pengguna menanyakan pertanyaan dalam bahasa inggris, maka berikan jawaban bahasa inggris juga. 
     Konteks tersebut sebagai berikut:
+    {queries}
 
-    ["role": "user", "parts": [{"text": txt}]]
-
-    Pertanyaan yang user berikan: {query}
+    Pertanyaan yang user berikan: {user}
     """
-    model = genai.Client()
+    model = genai.Client(api_key="AIzaSyDrspT5SfGPiSwv_hgqy3ZUmnmQL6FB328")
     result = model.models.generate_content(
         model="gemini-2.5-flash",
         contents=prompt,
-        # contents=[{"role": "user", "parts": [{"text": txt}]}],
     )
     return result.text.replace("**", "")
 
@@ -106,8 +107,5 @@ for hal in read.pages:
     txt += hal.extract_text()
 
 z = obj_doc(clean_pdf(txt))
-# a = 1
-# for y in z:
-#     print(f"Isi chunk ke-{a}, {y.page_content}")
-#     print("\n")
-#     a += 1
+y = llm(z)
+print(y)
