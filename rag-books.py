@@ -81,13 +81,23 @@ def save_db(embed, data):
     return collection
 
 
-def llm(txt):
+def llm(txt, query):
+    prompt = f""" 
+    Anda adalah seorang AI asisten yang membantu pengguna dengan pertanyaan mereka tentang produk Apple. Hal-hal seperti umur pengguna, jenis kelamin pengguna, dan sifat pengguna bermacam-macam sehingga Anda harus dapat beradaptasi dengan pengguna.
+    Dalam menjawab pertanyaan, anda diberikan beberapa konteks yang relevan sehingga anda dapat memberikan jawaban yang akurat. Selain itu, berikan jawaban kepada pengguna sesuai dengan bahasa yang mereka gunakan seperti jika pengguna menanyakan pertanyaan dalam bahasa inggris, maka berikan jawaban bahasa inggris juga. 
+    Konteks tersebut sebagai berikut:
+
+    ["role": "user", "parts": [{"text": txt}]]
+
+    Pertanyaan yang user berikan: {query}
+    """
     model = genai.Client()
     result = model.models.generate_content(
         model="gemini-2.5-flash",
-        contents=[{"role": "user", "parts": [{"text": txt}]}],
+        contents=prompt,
+        # contents=[{"role": "user", "parts": [{"text": txt}]}],
     )
-    return result.text
+    return result.text.replace("**", "")
 
 
 read = PdfReader("books.pdf")
