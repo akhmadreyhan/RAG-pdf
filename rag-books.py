@@ -64,6 +64,7 @@ def obj_doc(txt):
     for page in txt:
         data.append(Document(page_content=page))
 
+    # return data
     data = [page.page_content for page in data]
     model = SentenceTransformer("all-MiniLM-L6-v2")
     embed = model.encode(data)
@@ -95,4 +96,8 @@ for hal in read.pages:
     txt += hal.extract_text()
 
 z = obj_doc(clean_pdf(txt))
-print(z)
+# a = 1
+# for y in z:
+#     print(f"Isi chunk ke-{a}, {y.page_content}")
+#     print("\n")
+#     a += 1
