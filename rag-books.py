@@ -123,7 +123,7 @@ def llm(txt):
 
     Pertanyaan yang user berikan: {user}
     """
-    model = genai.Client(api_key="AIzaSyDrspT5SfGPiSwv_hgqy3ZUmnmQL6FB328")
+    model = genai.Client(api_key="insert api here")
     result = model.models.generate_content(
         model="gemini-2.5-flash",
         contents=prompt,
