@@ -1,7 +1,7 @@
 langchain
-langchain_community
-pypdf2
 google-genai
-langchain-text-splitters
 chromadb
 sentence-transformers
+pymupdf-layout
+pymupdf4llm
+opencv-python
